@@ -8,26 +8,22 @@ API Flask para controle de estoque por enderecos, com JWT por perfil, SQL Server
 2. Suba SQL Server e API:
 
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
-3. Rode a carga inicial:
-
-```bash
-docker compose exec api python seed.py
-```
-
-4. Acesse:
+3. Acesse:
 
 - API: `http://localhost:8000`
-- Swagger: `http://localhost:8000/docs/swagger`
+- Swagger (documentação): `http://localhost:8000/docs`
 
 Para rodar sem Docker, instale as dependencias e defina `DATABASE_URL`. Sem essa variavel, a aplicacao usa SQLite local apenas para desenvolvimento rapido.
 
 ```bash
+python -m venv venv 
+.\venv\Scripts\activate
 pip install -r requirements.txt
 python seed.py
-python run.py
+python run.py # (dados para teste)
 ```
 
 ## Autenticacao
