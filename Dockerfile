@@ -17,8 +17,9 @@ RUN apt-get update \
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+COPY seed.py .
 
 COPY . .
 
 EXPOSE 8000
-CMD ["python", "-m", "flask", "--app", "wsgi:app", "run", "--host=0.0.0.0", "--port=8000"]
+CMD ["sh", "-c", "python seed.py && python -m flask --app api:create_app run --host=0.0.0.0 --port=8000"]

@@ -6,6 +6,23 @@ from api.database import db
 from api.errors import register_error_handlers
 from api.extensions import jwt
 
+from datetime import datetime 
+
+def iso_to_br(value, fmt="%d/%m/%Y %H:%M"):
+    if not value:
+        return ""
+    # aceita datetime ou string
+    if isinstance(value, datetime):
+        return value.strftime(fmt)
+    try:
+        # se vier como string ISO com "Z" no final (UTC), remove
+        if isinstance(value, str) and value.endswith("Z"):
+            value = value[:-1]
+        dt = datetime.fromisoformat(value)
+        return dt.strftime(fmt)
+    except Exception:
+        # se der erro, devolve o valor original
+        return value
 
 def create_app():
     app = Flask(__name__)
@@ -58,5 +75,7 @@ def create_app():
     api.register_blueprint(enderecos.blp)
     api.register_blueprint(contagens.blp)
     api.register_blueprint(relatorios.blp)
+
+    app.jinja_env.filters["iso_to_br"] = iso_to_br
 
     return app

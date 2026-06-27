@@ -8,15 +8,14 @@
         <h1 class="h3 mb-1">Enderecos</h1>
         <p class="text-secondary mb-0">Locais fisicos do estoque.</p>
     </div>
-    <a class="btn btn-primary" href="{{ url_for('web.enderecos_novo') }}">Novo endereco</a>
 </div>
 
-<form class="row g-2 mb-3" method="get">
+<form id="filtro-enderecos" class="row g-2 mb-3" method="get">
     <div class="col-12 col-md-10">
-        <input class="form-control" type="search" name="q" value="{{ q }}" placeholder="Buscar por codigo ou descricao">
+        <input id="campo-busca" class="form-control" type="search" name="q" value="{{ q }}" placeholder="Buscar por codigo ou descricao">
     </div>
-    <div class="col-12 col-md-2">
-        <button class="btn btn-outline-primary w-100" type="submit">Buscar</button>
+    <div class="col-12 col-md-2 d-flex justify-content-md-end">
+        <a class="btn btn-primary" href="{{ url_for('web.enderecos_novo') }}">Novo endereco</a>
     </div>
 </form>
 
@@ -48,10 +47,22 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mt-3">
-    <span class="text-secondary small">Pagina {{ enderecos.page }} de {{ enderecos.pages }} - {{ enderecos.total }} registros</span>
+    <span class="text-secondary small text-dark">Pagina {{ enderecos.page }} de {{ enderecos.pages }} - {{ enderecos.total }} registros</span>
     <div class="btn-group">
-        <a class="btn btn-outline-secondary btn-sm {% if enderecos.page <= 1 %}disabled{% endif %}" href="{{ url_for('web.enderecos_list', q=q, page=enderecos.page - 1) }}">Anterior</a>
-        <a class="btn btn-outline-secondary btn-sm {% if enderecos.page >= enderecos.pages %}disabled{% endif %}" href="{{ url_for('web.enderecos_list', q=q, page=enderecos.page + 1) }}">Proxima</a>
+        <a class="btn btn-outline-secondary text-black btn-sm {% if enderecos.page <= 1 %}disabled{% endif %}" href="{{ url_for('web.enderecos_list', q=q, page=enderecos.page - 1) }}">Anterior</a>
+        <a class="btn btn-outline-secondary text-black btn-sm {% if enderecos.page >= enderecos.pages %}disabled{% endif %}" href="{{ url_for('web.enderecos_list', q=q, page=enderecos.page + 1) }}">Proxima</a>
     </div>
 </div>
+<script>
+  const input = document.getElementById("campo-busca");
+  const form = document.getElementById("filtro-enderecos");
+
+  let timer;
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      form.submit();
+    }, 300);
+  });
+</script>
 {% endblock %}

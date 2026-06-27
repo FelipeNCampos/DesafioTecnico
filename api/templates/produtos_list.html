@@ -8,15 +8,14 @@
         <h1 class="h3 mb-1">Produtos</h1>
         <p class="text-secondary mb-0">Listagem de SKUs cadastrados.</p>
     </div>
-    <a class="btn btn-primary" href="{{ url_for('web.produtos_novo') }}">Novo produto</a>
 </div>
 
 <form class="row g-2 mb-3" method="get">
     <div class="col-12 col-md-10">
         <input class="form-control" type="search" name="q" value="{{ q }}" placeholder="Buscar por SKU ou descricao">
     </div>
-    <div class="col-12 col-md-2">
-        <button class="btn btn-outline-primary w-100" type="submit">Buscar</button>
+    <div class="col-12 col-md-2 d-flex justify-content-md-end">
+        <a class="btn btn-primary" href="{{ url_for('web.produtos_novo') }}">Novo produto</a>
     </div>
 </form>
 

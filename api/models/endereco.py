@@ -11,5 +11,12 @@ class Endereco(db.Model): # ty: ignore
     codigo: str = db.Column(db.String(100), nullable=False)
     descricao: str = db.Column(db.String(255), nullable=True)
 
+    contagens = db.relationship(
+        "Contagem",
+        back_populates="endereco",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
     def __repr__(self):
         return f'<Endereco {self.codigo}>'

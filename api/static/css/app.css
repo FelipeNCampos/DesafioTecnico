@@ -65,6 +65,12 @@ main {
     padding-bottom: 1rem;
 }
 
+.nav-link.active {
+    font-weight: 600;
+    color: #0d6efd;
+    text-shadow: 0 0 1px rgba(13, 110, 253, 0.3);
+}
+
 .compact-table {
     flex: 1 1 auto;
     min-height: 0;
@@ -122,6 +128,8 @@ main {
     overflow: auto;
     box-shadow: 0 .5rem 1rem rgba(15, 23, 42, .12);
 }
+
+
 
 @media (max-width: 1080px), (max-height: 760px) {
     body {

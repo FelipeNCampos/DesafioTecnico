@@ -12,5 +12,12 @@ class Produto(db.Model): # ty: ignore
     descricao: str = db.Column(db.String(255), nullable=False)
     unidade: str = db.Column(db.String(50), nullable=False)
 
+    contagens = db.relationship(
+        "Contagem",
+        back_populates="produto",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    
     def __repr__(self):
         return f'<Produto {self.codigo}>'

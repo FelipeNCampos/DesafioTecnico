@@ -125,7 +125,7 @@ def produtos_list():
     status, payload = _fetch_list("/api/produtos", q=q, page=page)
     if _clear_session_on_auth_error(status):
         return redirect(url_for("web.login"))
-    return render_template("produtos_list.html", produtos=payload, q=q)
+    return render_template("produtos_list.html", produtos=payload, q=q, active_page="produtos")
 
 
 @bp.route("/web/produtos/novo", methods=["GET", "POST"])
@@ -148,10 +148,10 @@ def produtos_novo():
         if _clear_session_on_auth_error(status):
             return redirect(url_for("web.login"))
         flash(_message(payload, "Nao foi possivel cadastrar o produto."), "danger")
-    return render_template("produtos_form.html", form=form, title="Novo produto")
+    return render_template("produtos_form.html", form=form, title="Novo produto", active_page="produtos")
 
 
-@bp.route("/web/produtos/<int:produto_id>/editar", methods=["GET", "POST"])
+@bp.route("/web/produtos/<int:produto_id>/editar", methods=["GET", "POST", "DELETE"])
 @_login_required
 def produtos_editar(produto_id):
     form = ProdutoForm()
@@ -183,8 +183,22 @@ def produtos_editar(produto_id):
         if _clear_session_on_auth_error(status):
             return redirect(url_for("web.login"))
         flash(_message(payload, "Nao foi possivel atualizar o produto."), "danger")
-    return render_template("produtos_form.html", form=form, title="Editar produto")
+    return render_template("produtos_form.html", form=form, title="Editar produto", produto_id=produto_id, active_page="produtos")
 
+@bp.route("/web/produtos/<int:produto_id>/deletar", methods=["POST"])
+@_login_required
+def produtos_deletar(produto_id):
+    status, payload = _api_request("DELETE", f"/api/produtos/{produto_id}")
+
+    if _clear_session_on_auth_error(status):
+        return redirect(url_for("web.login"))
+
+    if status in (200, 204):
+        flash("Produto deletado com sucesso.", "success")
+    else:
+        flash(_message(payload, "Nao foi possivel deletar o produto."), "danger")
+
+    return redirect(url_for("web.produtos_list"))
 
 @bp.route("/web/enderecos")
 @_login_required
@@ -194,7 +208,7 @@ def enderecos_list():
     status, payload = _fetch_list("/api/enderecos", q=q, page=page)
     if _clear_session_on_auth_error(status):
         return redirect(url_for("web.login"))
-    return render_template("enderecos_list.html", enderecos=payload, q=q)
+    return render_template("enderecos_list.html", enderecos=payload, q=q, active_page="enderecos")
 
 
 @bp.route("/web/enderecos/novo", methods=["GET", "POST"])
@@ -213,7 +227,7 @@ def enderecos_novo():
         if _clear_session_on_auth_error(status):
             return redirect(url_for("web.login"))
         flash(_message(payload, "Nao foi possivel cadastrar o endereco."), "danger")
-    return render_template("enderecos_form.html", form=form, title="Novo endereco")
+    return render_template("enderecos_form.html", form=form, title="Novo endereco", active_page="enderecos")
 
 
 @bp.route("/web/enderecos/<int:endereco_id>/editar", methods=["GET", "POST"])
@@ -243,7 +257,22 @@ def enderecos_editar(endereco_id):
         if _clear_session_on_auth_error(status):
             return redirect(url_for("web.login"))
         flash(_message(payload, "Nao foi possivel atualizar o endereco."), "danger")
-    return render_template("enderecos_form.html", form=form, title="Editar endereco")
+    return render_template("enderecos_form.html", form=form, title="Editar endereco", active_page="enderecos", endereco_id=endereco_id)
+
+@bp.route("/web/enderecos/<int:endereco_id>/deletar", methods=["POST"])
+@_login_required
+def enderecos_deletar(endereco_id):
+    status, payload = _api_request("DELETE", f"/api/enderecos/{endereco_id}")
+
+    if _clear_session_on_auth_error(status):
+        return redirect(url_for("web.login"))
+
+    if status in (200, 204):
+        flash("Endereco deletado com sucesso.", "success")
+    else:
+        flash(_message(payload, "Nao foi possivel deletar o endereco."), "danger")
+
+    return redirect(url_for("web.enderecos_list"))
 
 
 @bp.route("/web/contagens/novo", methods=["GET", "POST"])
@@ -273,6 +302,7 @@ def contagens_novo():
         produtos=produtos,
         enderecos=enderecos,
         usuario=session.get("user") or {},
+        active_page="contagens",
     )
 
 
@@ -295,6 +325,7 @@ def saldo():
         enderecos=enderecos,
         codigo_endereco=codigo_endereco,
         saldo=saldo_payload,
+        active_page="saldo",
     )
 
 
@@ -317,4 +348,5 @@ def divergencia():
         enderecos=enderecos,
         codigo_endereco=codigo_endereco,
         relatorio=relatorio,
+        active_page="divergencia",
     )

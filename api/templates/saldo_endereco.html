@@ -5,17 +5,14 @@
 {% block content %}
 <h1 class="h3 mb-3">Saldo por endereco</h1>
 
-<form class="row g-2 mb-3" method="get">
+<form id="filtro-saldo" class="row g-2 mb-3" method="get">
     <div class="col-12 col-md-9">
-        <select class="form-select" name="codigo_endereco" required>
+        <select id="codigo-endereco" class="form-select" name="codigo_endereco" required>
             <option value="">Selecione um endereco...</option>
             {% for endereco in enderecos %}
             <option value="{{ endereco.codigo }}" {% if codigo_endereco == endereco.codigo %}selected{% endif %}>{{ endereco.codigo }} - {{ endereco.descricao or "Sem descricao" }}</option>
             {% endfor %}
         </select>
-    </div>
-    <div class="col-12 col-md-3">
-        <button class="btn btn-primary w-100" type="submit">Consultar</button>
     </div>
 </form>
 
@@ -37,7 +34,7 @@
                     <td class="fw-semibold">{{ item.sku }}</td>
                     <td>{{ item.produto }}</td>
                     <td>{{ item.quantidade }}</td>
-                    <td>{{ item.contado_em }}</td>
+                    <td>{{ item.contado_em | iso_to_br }}</td>
                 </tr>
                 {% else %}
                 <tr><td colspan="4" class="text-center text-secondary py-4">Sem contagens para este endereco.</td></tr>
@@ -47,4 +44,16 @@
     </div>
 </div>
 {% endif %}
+<script>
+  const input = document.getElementById("codigo-endereco");
+  const form = document.getElementById("filtro-saldo");
+
+  let timer;
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      form.submit();
+    }, 300);
+  });
+</script>
 {% endblock %}
