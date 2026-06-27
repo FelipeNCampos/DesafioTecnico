@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}{{ app_name }} | Painel{% endblock %}
+
+{% block content %}
+<section id="loginView" class="auth-shell">
+    <div class="card auth-card shadow-sm">
+        <div class="card-body p-4">
+            <div class="mb-4">
+                <p class="text-uppercase text-secondary small fw-semibold mb-1">Acesso</p>
+                <h1 class="h4 mb-1">Entrar no painel</h1>
+                <p class="text-secondary mb-0">Use um usuario gerente ou operador.</p>
+            </div>
+
+            <div id="loginAlert" class="alert alert-danger d-none" role="alert"></div>
+
+            <form id="loginForm" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="emailInput">Email</label>
+                    <input id="emailInput" class="form-control" name="email" type="email" autocomplete="username" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="passwordInput">Senha</label>
+                    <input id="passwordInput" class="form-control" name="password" type="password" autocomplete="current-password" required>
+                </div>
+                <button id="loginButton" class="btn btn-primary w-100" type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section id="dashboardView" class="d-none dashboard-shell">
+    <div class="row g-3 align-items-stretch mb-3">
+        <div class="col-12 col-xl-6">
+            <div class="dashboard-panel h-100">
+                <p class="text-uppercase text-secondary small fw-semibold mb-1">Painel</p>
+                <h1 id="welcomeTitle" class="h3 mb-2">Bem-vindo</h1>
+                <p id="welcomeSubtitle" class="text-secondary mb-0">Resumo operacional do estoque.</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="metric-panel h-100">
+                <span class="text-secondary small">Produtos</span>
+                <strong id="productsTotal" class="metric-value">-</strong>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="metric-panel h-100">
+                <span class="text-secondary small">Enderecos</span>
+                <strong id="addressesTotal" class="metric-value">-</strong>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboardAlert" class="alert alert-warning d-none" role="alert"></div>
+
+    <div class="row g-3">
+        <div class="col-12 col-xl-7">
+            <div class="dashboard-panel table-panel inventory-panel">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                    <div>
+                        <h2 class="h5 mb-1">Produtos</h2>
+                        <p id="productsPageInfo" class="text-secondary mb-0 small">Pagina 1</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="addProductButton" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal">+</button>
+                    </div>
+                </div>
+                <div class="table-responsive compact-table">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Descricao</th>
+                                <th>Unidade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center gap-2 mt-2">
+                    <button id="prevProductsButton" class="btn btn-outline-secondary btn-sm" type="button">Anterior</button>
+                    <button id="nextProductsButton" class="btn btn-outline-secondary btn-sm" type="button">Proxima</button>
+                </div>
+                <p id="productsEmpty" class="text-secondary mb-0 d-none">Nenhum produto encontrado.</p>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-5">
+            <div class="dashboard-panel table-panel inventory-panel">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                    <div>
+                        <h2 class="h5 mb-1">Enderecos</h2>
+                        <p id="addressesPageInfo" class="text-secondary mb-0 small">Pagina 1</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="addAddressButton" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#addressModal">+</button>
+                    </div>
+                </div>
+                <div class="table-responsive compact-table">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Descricao</th>
+                            </tr>
+                        </thead>
+                        <tbody id="addressesTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center gap-2 mt-2">
+                    <button id="prevAddressesButton" class="btn btn-outline-secondary btn-sm" type="button">Anterior</button>
+                    <button id="nextAddressesButton" class="btn btn-outline-secondary btn-sm" type="button">Proxima</button>
+                </div>
+                <p id="addressesEmpty" class="text-secondary mb-0 d-none">Nenhum endereco encontrado.</p>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-7">
+            <div class="dashboard-panel">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <div>
+                        <h2 class="h5 mb-1">Contagens</h2>
+                        <p class="text-secondary mb-0">Consulte saldo ou registre uma nova contagem.</p>
+                    </div>
+                    <button id="addCountButton" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#countModal">+</button>
+                </div>
+                <form id="stockShortcutForm" class="row g-2 align-items-end">
+                    <div class="col-12 col-md-8 searchable-field">
+                        <label class="form-label" for="stockAddressInput">Codigo do endereco</label>
+                        <input id="stockAddressInput" class="form-control" type="text" autocomplete="off" placeholder="Digite codigo ou descricao">
+                        <div id="stockAddressOptions" class="searchable-menu list-group d-none"></div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button class="btn btn-primary w-100" type="submit">Consultar saldo</button>
+                    </div>
+                </form>
+                <div id="stockResult" class="result-box d-none mt-3"></div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-5 gerente-only">
+            <div class="dashboard-panel">
+                <h2 class="h5 mb-3">Relatorio de divergencia</h2>
+                <form id="reportShortcutForm" class="row g-2 align-items-end">
+                    <div class="col-12 searchable-field">
+                        <label class="form-label" for="reportAddressInput">Codigo do endereco</label>
+                        <input id="reportAddressInput" class="form-control" type="text" autocomplete="off" placeholder="Digite codigo ou descricao">
+                        <div id="reportAddressOptions" class="searchable-menu list-group d-none"></div>
+                    </div>
+                    <div class="col-12">
+                        <button id="reportButton" class="btn btn-outline-primary w-100" type="submit">Consultar divergencia</button>
+                    </div>
+                </form>
+                <p class="text-secondary small mt-2 mb-0">Disponivel para usuarios gerente.</p>
+                <div id="reportResult" class="result-box d-none mt-3"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="productForm" novalidate>
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="productModalTitle">Novo produto</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="productFormAlert" class="alert alert-danger d-none" role="alert"></div>
+                    <div class="mb-3">
+                        {{ produto_form.codigo.label(class_="form-label", for="productCodeInput") }}
+                        {{ produto_form.codigo(id="productCodeInput", class_="form-control", autocomplete="off") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ produto_form.descricao.label(class_="form-label", for="productDescriptionInput") }}
+                        {{ produto_form.descricao(id="productDescriptionInput", class_="form-control", autocomplete="off") }}
+                    </div>
+                    <div>
+                        {{ produto_form.unidade.label(class_="form-label", for="productUnitInput") }}
+                        {{ produto_form.unidade(id="productUnitInput", class_="form-control", autocomplete="off", placeholder="UN") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="saveProductButton" class="btn btn-primary" type="submit">Salvar produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="addressForm" novalidate>
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="addressModalTitle">Novo endereco</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="addressFormAlert" class="alert alert-danger d-none" role="alert"></div>
+                    <div class="mb-3">
+                        {{ endereco_form.codigo.label(class_="form-label", for="addressCodeInput") }}
+                        {{ endereco_form.codigo(id="addressCodeInput", class_="form-control", autocomplete="off") }}
+                    </div>
+                    <div>
+                        {{ endereco_form.descricao.label(class_="form-label", for="addressDescriptionInput") }}
+                        {{ endereco_form.descricao(id="addressDescriptionInput", class_="form-control", autocomplete="off") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="saveAddressButton" class="btn btn-primary" type="submit">Salvar endereco</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="countModal" tabindex="-1" aria-labelledby="countModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="countForm" novalidate>
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="countModalTitle">Nova contagem</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="countFormAlert" class="alert alert-danger d-none" role="alert"></div>
+
+                    <div class="mb-3 searchable-field" data-combobox="products">
+                        {{ contagem_form.sku.label(class_="form-label", for="countProductInput") }}
+                        {{ contagem_form.sku(id="countProductInput", class_="form-control", autocomplete="off", placeholder="Digite SKU ou descricao") }}
+                        <div id="productOptions" class="searchable-menu list-group d-none"></div>
+                    </div>
+
+                    <div class="mb-3 searchable-field" data-combobox="addresses">
+                        {{ contagem_form.codigo_endereco.label(class_="form-label", for="countAddressInput") }}
+                        {{ contagem_form.codigo_endereco(id="countAddressInput", class_="form-control", autocomplete="off", placeholder="Digite codigo ou descricao") }}
+                        <div id="addressOptions" class="searchable-menu list-group d-none"></div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            {{ contagem_form.quantidade.label(class_="form-label", for="countQuantityInput") }}
+                            {{ contagem_form.quantidade(id="countQuantityInput", class_="form-control", min="0") }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ contagem_form.contado_em.label(class_="form-label", for="countDateInput") }}
+                            {{ contagem_form.contado_em(id="countDateInput", class_="form-control") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="saveCountButton" class="btn btn-primary" type="submit">Salvar contagem</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+{% endblock %}

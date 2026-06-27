@@ -1,0 +1,158 @@
+:root {
+    color-scheme: light;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: #f5f7fb;
+}
+
+main {
+    height: calc(100vh - 57px);
+    overflow: hidden;
+}
+
+.auth-shell {
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+
+.dashboard-shell {
+    height: 100%;
+    overflow: hidden;
+}
+
+.auth-card {
+    width: min(100%, 420px);
+    border: 1px solid #dfe5ee;
+    border-radius: 8px;
+}
+
+.dashboard-panel,
+.metric-panel {
+    background: #ffffff;
+    border: 1px solid #dfe5ee;
+    border-radius: 8px;
+    padding: .75rem;
+}
+
+.metric-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 96px;
+}
+
+.metric-value {
+    display: block;
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+.table-panel {
+    display: flex;
+    flex-direction: column;
+    max-height: 250px;
+    overflow: hidden;
+}
+
+.inventory-panel {
+    height: clamp(132px, 31vh, 318px);
+    max-height: max(190px, min(318px, calc(100vh - 450px)));
+    min-height: 190px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.compact-table {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+}
+
+.compact-table .table {
+    margin-bottom: 0;
+}
+
+.compact-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #ffffff;
+}
+
+.btn-sm {
+    min-width: 2rem;
+}
+
+.table {
+    table-layout: fixed;
+}
+
+.table th,
+.table td {
+    overflow-wrap: anywhere;
+}
+
+.result-box {
+    max-height: 118px;
+    overflow: auto;
+    background: #f8fafc;
+    border: 1px solid #dfe5ee;
+    border-radius: 8px;
+    padding: .875rem;
+}
+
+.result-box pre {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.searchable-field {
+    position: relative;
+}
+
+.searchable-menu {
+    position: absolute;
+    z-index: 1080;
+    width: 100%;
+    max-height: 220px;
+    overflow: auto;
+    box-shadow: 0 .5rem 1rem rgba(15, 23, 42, .12);
+}
+
+@media (max-width: 1080px), (max-height: 760px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    main {
+        height: auto;
+        min-height: calc(100vh - 57px);
+        overflow: visible;
+    }
+
+    .dashboard-shell {
+        height: auto;
+        overflow: visible;
+    }
+
+    .inventory-panel {
+        height: auto;
+        max-height: none;
+    }
+
+    .compact-table {
+        flex: 0 0 auto;
+        max-height: 220px;
+    }
+
+    .result-box {
+        max-height: 180px;
+    }
+}
