@@ -11,14 +11,44 @@
     <nav class="navbar navbar-expand-lg bg-body border-bottom sticky-top">
         <div class="container-fluid px-3 px-lg-4">
             <a class="navbar-brand fw-semibold" href="{{ url_for('web.index') }}">{{ app_name|default("Estoque X") }}</a>
-            <div class="ms-auto d-flex align-items-center gap-2">
-                <span id="navUserBadge" class="badge text-bg-light d-none"></span>
-                <button id="logoutButton" class="btn btn-outline-secondary btn-sm d-none" type="button">Sair</button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="mainNav" class="collapse navbar-collapse">
+                {% if session.get("access_token") %}
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('web.produtos_list') }}">Produtos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('web.enderecos_list') }}">Enderecos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('web.contagens_novo') }}">Registrar contagem</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('web.saldo') }}">Saldo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('web.divergencia') }}">Divergencia</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge text-bg-light">{{ session.get("user", {}).get("nome", "Usuario") }} - {{ session.get("user", {}).get("perfil", "") }}</span>
+                    <form method="post" action="{{ url_for('web.logout') }}">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit">Sair</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="ms-auto">
+                    <a class="btn btn-primary btn-sm" href="{{ url_for('web.login') }}">Entrar</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </nav>
 
-    <main class="container-fluid px-3 px-lg-4 py-4">
+    <main class="container py-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} mb-2" role="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
 

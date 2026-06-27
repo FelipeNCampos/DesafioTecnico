@@ -3,14 +3,13 @@
 }
 
 body {
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-y: auto;
     background: #f5f7fb;
 }
 
 main {
-    height: calc(100vh - 57px);
-    overflow: hidden;
+    min-height: calc(100vh - 57px);
 }
 
 .auth-shell {

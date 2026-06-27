@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Saldo por endereco | Estoque X{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Saldo por endereco</h1>
+
+<form class="row g-2 mb-3" method="get">
+    <div class="col-12 col-md-9">
+        <select class="form-select" name="codigo_endereco" required>
+            <option value="">Selecione um endereco...</option>
+            {% for endereco in enderecos %}
+            <option value="{{ endereco.codigo }}" {% if codigo_endereco == endereco.codigo %}selected{% endif %}>{{ endereco.codigo }} - {{ endereco.descricao or "Sem descricao" }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-12 col-md-3">
+        <button class="btn btn-primary w-100" type="submit">Consultar</button>
+    </div>
+</form>
+
+{% if saldo %}
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Produto</th>
+                    <th>Quantidade atual</th>
+                    <th>Ultima contagem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in saldo["items"] %}
+                <tr>
+                    <td class="fw-semibold">{{ item.sku }}</td>
+                    <td>{{ item.produto }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td>{{ item.contado_em }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-secondary py-4">Sem contagens para este endereco.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

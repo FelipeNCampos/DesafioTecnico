@@ -1,11 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import DateTimeLocalField, IntegerField, StringField
+from wtforms import DateTimeLocalField, IntegerField, PasswordField, StringField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
 class WebForm(FlaskForm):
     class Meta:
         csrf = False
+
+
+class LoginForm(WebForm):
+    email = StringField("Email", validators=[DataRequired(), Length(max=200)])
+    password = PasswordField("Senha", validators=[DataRequired()])
 
 
 class ProdutoForm(WebForm):

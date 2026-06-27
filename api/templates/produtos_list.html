@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Produtos | Estoque X{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Produtos</h1>
+        <p class="text-secondary mb-0">Listagem de SKUs cadastrados.</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('web.produtos_novo') }}">Novo produto</a>
+</div>
+
+<form class="row g-2 mb-3" method="get">
+    <div class="col-12 col-md-10">
+        <input class="form-control" type="search" name="q" value="{{ q }}" placeholder="Buscar por SKU ou descricao">
+    </div>
+    <div class="col-12 col-md-2">
+        <button class="btn btn-outline-primary w-100" type="submit">Buscar</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Descricao</th>
+                    <th>Unidade</th>
+                    <th class="text-end">Acoes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos["items"] %}
+                <tr>
+                    <td class="fw-semibold">{{ produto.codigo }}</td>
+                    <td>{{ produto.descricao }}</td>
+                    <td>{{ produto.unidade }}</td>
+                    <td class="text-end">
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('web.produtos_editar', produto_id=produto.id) }}">Editar</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-secondary py-4">Nenhum produto encontrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <span class="text-secondary small">Pagina {{ produtos.page }} de {{ produtos.pages }} - {{ produtos.total }} registros</span>
+    <div class="btn-group">
+        <a class="btn btn-outline-secondary btn-sm {% if produtos.page <= 1 %}disabled{% endif %}" href="{{ url_for('web.produtos_list', q=q, page=produtos.page - 1) }}">Anterior</a>
+        <a class="btn btn-outline-secondary btn-sm {% if produtos.page >= produtos.pages %}disabled{% endif %}" href="{{ url_for('web.produtos_list', q=q, page=produtos.page + 1) }}">Proxima</a>
+    </div>
+</div>
+{% endblock %}
